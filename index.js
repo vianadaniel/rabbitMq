@@ -2,7 +2,7 @@ const amqp = require('amqplib');
 
 async function testarConexao() {
     try {
-        Estabeleça a conexão com o RabbitMQ
+
         const connection = await amqp.connect('amqp://admin:admin@localhost:5672');
 
         // Crie um canal
