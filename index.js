@@ -3,7 +3,7 @@ const amqp = require('amqplib');
 async function testarConexao() {
     try {
 
-        const connection = await amqp.connect('amqp://admin:admin@localhost:5672');
+        const connection = await amqp.connect('amqp://guest:guest@localhost:5672');
 
         // Crie um canal
         const channel = await connection.createChannel();
@@ -18,6 +18,15 @@ async function testarConexao() {
 
         console.log('Conexão estabelecida com sucesso e mensagem enviada.');
 
+        console.log('Aguardando mensagens...');
+
+        await channel.consume(queue, (message) => {
+            if (message !== null) {
+                console.log('Mensagem recebida:', message.content.toString());
+                channel.ack(message); // Acknowledge the message
+            }
+        });
+
         // Feche o canal e a conexão
         await channel.close();
         await connection.close();
@@ -28,4 +37,6 @@ async function testarConexao() {
 }
 
 // Chame a função de teste
+// docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+
 testarConexao();
